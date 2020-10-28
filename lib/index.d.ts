@@ -8,9 +8,17 @@ export type Middleware<TState> = (
   api: ApplicationApi<TState>
 ) => ApplicationApi<TState>;
 
+export interface State {
+  <T>(selector: (globalState: any) => T): T;
+  <T>(localStateInitial: T): [T, (value: T | ((prev: T) => T)) => void];
+}
+
 export interface ComponentProps extends PlainObject {}
 
-export type Component<TProps = ComponentProps> = (props?: TProps) => any;
+export type Component<TProps = ComponentProps> = (
+  props?: TProps,
+  state?: State
+) => any;
 
 export type Action<TState, TPayload> = (
   state?: TState,
