@@ -22,7 +22,7 @@ const handleKeyPress = (state, e) => {
 const TodoInput = () =>
   hta`
   <div>
-    <input type="text" ${{ $keypress: handleKeyPress }}/>
+    <input type="text" ${{ id: "" }}/>
   </div>
   `;
 
@@ -36,7 +36,7 @@ const TodoItem = ({ id, title, completed }) =>
   <li>
     <input type="checkbox" ${{ checked: completed }}/>
     <span ${{ text: title }}></span>
-    <button ${{ $click: [remove, id] }}>Remove</button>
+    <button ${{ on: { click: [remove, id] } }}>Remove</button>
   </li>`;
 
 const App = () => hta`
