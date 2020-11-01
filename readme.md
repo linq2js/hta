@@ -10,6 +10,12 @@ The 2kB framework for building Hyper Text Application
 - Extremely fast DOM updating
 - On-premise state management
 
+## Installation
+
+```
+npm install hta --save
+```
+
 ## Counter App
 
 Creating Counter App with few lines of code
