@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
-    "build-browser": "terser lib/index.js --output ./dist/index.js --module -mc",
+    "build-browser": "terser lib/index.js --output ./dist/index.js --module --compress --mangle --comments false && gzip-size ./dist/index.js",
     "_publish": "npm run test && npm run build-browser && npm publish"
   },
   "files": [
@@ -61,7 +61,8 @@
     "node-fetch": "^2.6.0",
     "prettier": "^2.0.5",
     "typescript": "^4.0.2",
-    "terser": "^5.3.8"
+    "terser": "^5.3.8",
+    "gzip-size-cli": "^3.0.0"
   },
   "dependencies": {}
 }

@@ -42,3 +42,80 @@ const App = ({ count }) =>
 // the App will be rendered into document.body by default
 hta(App, { state: { count: 1 } });
 ```
+
+## API references
+
+- hta(component, options)
+
+  **options:**
+
+  - state
+  - container (default = document.body)
+  - middleware
+  - onLoad
+  - onDispatch
+  - onUpdate
+
+- Application instance
+
+  - .state
+  - .dispatch(action, payload)
+
+- Store
+
+  - Dispatching action
+  - Updating state
+  - Handling async data
+  - Loadable
+
+- hta\`template string`
+- hta.raw(value)
+- Bindings
+  - id
+  - for
+  - href
+  - title
+  - size
+  - lang
+  - dir
+  - tabindex
+  - src
+  - alt
+  - checked
+  - disabled
+  - selected
+  - multiple
+  - scrollLeft
+  - scrollTop
+  - name
+  - class
+  - style
+  - html
+  - text
+  - attr
+  - prop
+  - on
+    - mount
+    - destroy
+  - visible
+  - once
+  - ref
+  - sheet
+  - each
+  - item
+    - key
+    - tag
+    - render
+    - map
+    - pure
+  - Shorthand bindings
+    - A prop name starts with \$
+    - A prop name starts with @
+- Component
+  - component(props, state)
+- Hooks
+  - useState(initial)
+  - useStore(selector)
+  - useMemo(initFn, deps)
+  - useCallback(callback, deps)
+  - useEffect(effect, deps)
