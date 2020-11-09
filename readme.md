@@ -1,6 +1,6 @@
 # HTA
 
-The 2kB framework for building Hyper Text Application
+The tiny framework for building Hyper Text Application with ease
 
 ## Why HTA ?
 
@@ -8,7 +8,7 @@ The 2kB framework for building Hyper Text Application
 - No compiler or bundler needed
 - Easy to convert HTML template to HTA
 - Extremely fast DOM updating
-- On-premise state management
+- Built-in store and router
 
 ## Installation
 
@@ -16,106 +16,86 @@ The 2kB framework for building Hyper Text Application
 npm install hta --save
 ```
 
-## Counter App
+## Comparison with Other Frameworks
 
-Creating Counter App with few lines of code
+### Syntax
+
+Let's create simple counter app
+
+### HTA
 
 ```js
-import hta from "hta";
+import $ from "hta";
 
-// define an Increase action, the action receives current app state and returns state updates
-const Increase = ({ count }) =>
-  // update count value
-  ({ count: count + 1 });
-// define App component that receives current app state when it renders
-const App = ({ count }) =>
-  // the component returns HTA template. We use tagged template to create HTML elements
-  // using binding syntax for adding binding to specified element ( ${ binding } )
-  // the binding must be placed inside element's open tag
-  hta`
-    <h1 ${{ text: count }}></h1>
-    <button ${{
-      // bind Increase action to click event
-      $click: Increase,
-    }}>Increase</button>`;
-// start App rendering with initial state
-// the App will be rendered into document.body by default
-hta(App, { state: { count: 1 } });
+const initialState = { count: 0 };
+const Increase = ({ count }) => ({ count: count + 1 });
+const CounterValue = () => $`<h1>${$.store("counter")}</h1>`;
+const CounterAction = () =>
+  $`<button ${{ onclick: Increase }}>Increase</button>`;
+const App = () => $`
+  ${CounterValue}
+  ${CounterAction}`;
+$.render(App, { state: initialState });
 ```
 
+### React + Redux Toolkit
+
+```jsx
+import React from "react";
+import { render } from "react-dom";
+import { connect, Provider } from "react-redux";
+import { configureStore, createAction, createReducer } from "@reduxjs/toolkit";
+
+const increment = createAction("INCREMENT");
+const reducer = createReducer(0, {
+  [increment.type]: (state) => state + 1,
+});
+const store = configureStore({ reducer });
+
+const CounterValue = connect((state) => ({ count: state }))(({ count }) => (
+  <h1>{count}</h1>
+));
+const CounterAction = connect(null, { increment })(({ increment }) => (
+  <button onClick={increment}>Increase</button>
+));
+const App = () => (
+  <>
+    <Provider store={store}>
+      <CounterValue />
+      <CounterAction />
+    </Provider>
+  </>
+);
+render(<App />, document.body);
+```
+
+## Features
+
+| Feature            |   HTA   |  React  |   Vue   | Angular |
+| :----------------- | :-----: | :-----: | :-----: | :-----: |
+| Declarative        | &#9745; | &#9745; |         |         |
+| Compiler / Bundler |         | &#9745; | &#9745; | &#9745; |
+| Component          | &#9745; | &#9745; | &#9745; | &#9745; |
+| Hooks              | &#9745; | &#9745; | &#9745; |         |
+| Lazy Component     | &#9745; | &#9745; | &#9745; | &#9745; |
+| Shared Context     | &#9745; | &#9745; | &#9745; | &#9745; |
+| Suspense           | &#9745; |         |         |         |
+| Two Way Binding    | &#9745; |         | &#9745; | &#9745; |
+| SVG Supported      | &#9745; |         | &#9745; | &#9745; |
+| Directive          | &#9745; |         | &#9745; | &#9745; |
+| Built-in Router    | &#9745; |         |         | &#9745; |
+| Built-in Store     | &#9745; |         |         |         |
+
+## Examples
+
+- [Todo App (4000 todos)](https://codesandbox.io/s/hta-todo-performance-forked-1xmx5?file=/src/index.js)
+- [Crypto Search (2000 coins)](https://codesandbox.io/s/hta-crypto-search-rv39j?file=/src/hta/index.js)
+- [Silky Smooth (Fast enough to render over 500 elements at 60fps)](https://codesandbox.io/s/hta-silky-smooth-2-s3l3r?file=/src/index.js)
+- Performance testing
+  - [hta](https://codesandbox.io/s/hta-v1-performance-b3dou?file=/src/index.js)
+  - [react + redux](https://codesandbox.io/s/redux-performance-hbit7)
+- SVG Animation
+  - [hta](https://codesandbox.io/s/hta-v1-balls-anim-90v1j?file=/src/index.js)
+  - [d3js](http://tommykrueger.com/projects/d3tests/performance-test.php)
+
 ## API references
-
-- hta(component, options)
-
-  **options:**
-
-  - state
-  - container (default = document.body)
-  - middleware
-  - onLoad
-  - onDispatch
-  - onUpdate
-
-- Application instance
-
-  - .state
-  - .dispatch(action, payload)
-
-- Store
-
-  - Dispatching action
-  - Updating state
-  - Handling async data
-  - Loadable
-
-- hta\`template string`
-- hta.raw(value)
-- Bindings
-  - id
-  - for
-  - href
-  - title
-  - size
-  - lang
-  - dir
-  - tabindex
-  - src
-  - alt
-  - checked
-  - disabled
-  - selected
-  - multiple
-  - scrollLeft
-  - scrollTop
-  - name
-  - class
-  - style
-  - html
-  - text
-  - attr
-  - prop
-  - on
-    - mount
-    - destroy
-  - visible
-  - once
-  - ref
-  - sheet
-  - each
-  - item
-    - key
-    - tag
-    - render
-    - map
-    - pure
-  - Shorthand bindings
-    - A prop name starts with \$
-    - A prop name starts with @
-- Component
-  - component(props, state)
-- Hooks
-  - useState(initial)
-  - useStore(selector)
-  - useMemo(initFn, deps)
-  - useCallback(callback, deps)
-  - useEffect(effect, deps)

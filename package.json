@@ -1,7 +1,7 @@
 {
   "name": "hta",
-  "version": "0.0.2",
-  "description": "The 2kB framework for building Hyper Text Application",
+  "version": "1.0.4",
+  "description": "The tiny framework for building Hyper Text Application with ease",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -57,12 +57,15 @@
     "babel-jest": "^26.2.2",
     "babel-plugin-module-resolver": "^4.0.0",
     "cross-env": "^7.0.2",
+    "gzip-size-cli": "^3.0.0",
     "jest": "^26.2.2",
     "node-fetch": "^2.6.0",
     "prettier": "^2.0.5",
-    "typescript": "^4.0.2",
     "terser": "^5.3.8",
-    "gzip-size-cli": "^3.0.0"
+    "typescript": "^4.0.2",
+    "parcel-bundler": "^1.12.4",
+    "path-to-regexp": "^6.2.0",
+    "history": "^5.0.0"
   },
   "dependencies": {}
 }

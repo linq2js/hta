@@ -9,10 +9,6 @@
       }
     ]
   ],
-  "plugins": [
-    "@babel/plugin-syntax-class-properties",
-    "@babel/plugin-proposal-class-properties"
-  ],
   "env": {
     "test": {
       "presets": ["@babel/preset-env", "jest"],

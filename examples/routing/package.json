@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "history": "^5.0.0",
+    "path-to-regexp": "^6.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3"
+  }
+}

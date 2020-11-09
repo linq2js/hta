@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "updating-performance": "parcel ./updating-performance/index.html",
+    "routing": "parcel ./routing/index.html",
+    "nested-routing": "parcel ./routing/nested.html",
+    "bindings-dimensions": "parcel ./bindings-dimensions/index.html",
+    "rainbow": "parcel ./rainbow/index.html"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "history": "^5.0.0",
+    "parcel-bundler": "^1.12.4",
+    "path-to-regexp": "^6.2.0"
+  }
+}
