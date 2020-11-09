@@ -1,6 +1,6 @@
 {
   "name": "hta",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The tiny framework for building Hyper Text Application with ease",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
