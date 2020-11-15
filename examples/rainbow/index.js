@@ -1,26 +1,44 @@
-import $ from "../../lib";
+import { $, render } from "../../core";
+import { useStore } from "../../hook";
+import { storeExtras } from "../../store";
 
-const App = ({ async, numPoints, points }) => $`
-<div class="app-wrapper">
-    <svg class="demo">
-      <g>${points.map(renderPoint)}</g>
-    </svg>
-
+const Controls = () => {
+  let { numPoints, async } = useStore((state) => ({
+    numPoints: state.numPoints,
+    async: state.async,
+  }));
+  return $`
   <div class="controls">
     # Points
     <input name="numPoints" type="range" min=10 max=10000 ${{
       value: numPoints,
-      onchange: handleUIUpdate,
+      onchange: [handleUIUpdate],
     }}>
     ${numPoints}
     <label>
       <input name="async" type="checkbox" ${{
         checked: async,
-        onchange: handleUIUpdate,
+        onchange: [handleUIUpdate],
       }}>
       Async
     </label>
   </div>
+  `;
+};
+
+const Canvas = () => {
+  const points = useStore((state) => state.points);
+  return $`
+  <svg class="demo">
+    <g>${points.map(Point)}</g>
+  </svg>
+  `;
+};
+
+const App = () => $`
+<div class="app-wrapper">
+  ${Canvas}
+  ${Controls}
   <div class="about">
     Demo by <a href="https://twitter.com/WebReflection" target="_blank">Andrea Giammarchi</a>,
     based on the Preact demo by <a href="https://github.com/developit" target="_blank">Jason Miller</a>,
@@ -29,7 +47,7 @@ const App = ({ async, numPoints, points }) => $`
 </div>
 `;
 
-$.render(App, {
+render(App, {
   state: {
     numPoints: 0,
     points: [],
@@ -38,11 +56,12 @@ $.render(App, {
     layout: 0,
     async: false,
   },
-  onLoad(e) {
+  use: [storeExtras],
+  onLoad(app) {
     setTimeout(() => {
-      e.target.dispatch(update, { key: "numPoints", value: 1000 });
+      app.dispatch(update, { key: "numPoints", value: 1000 });
       function animate() {
-        e.target.dispatch(next);
+        app.dispatch(next);
         requestAnimationFrame(animate);
       }
       animate();
@@ -51,7 +70,7 @@ $.render(App, {
 });
 
 // components
-function renderPoint(point) {
+function Point(point) {
   const props = {
     attr: { fill: point.color, transform: `translate(${point.x}, ${point.y})` },
   };
@@ -228,3 +247,17 @@ function project(vector) {
   const ww = window.innerWidth / 2;
   return translate([ww, wh], scale(Math.min(wh, ww), vector));
 }
+
+(function () {
+  var script = document.createElement("script");
+  script.onload = function () {
+    var stats = new Stats();
+    document.body.appendChild(stats.dom);
+    requestAnimationFrame(function loop() {
+      stats.update();
+      requestAnimationFrame(loop);
+    });
+  };
+  script.src = "//cdn.jsdelivr.net/gh/Kevnz/stats.js/build/stats.min.js";
+  document.head.appendChild(script);
+})();

@@ -1,16 +1,23 @@
 {
   "name": "hta",
-  "version": "1.0.5",
+  "version": "1.2.0",
   "description": "The tiny framework for building Hyper Text Application with ease",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "core/index.js",
+  "types": "src/index.d.ts",
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
-    "build-browser": "terser lib/index.js --output ./dist/index.js --module --compress --mangle --comments false && gzip-size ./dist/index.js",
-    "_publish": "npm run test && npm run build-browser && npm publish"
+    "build-browser": "rollup $INPUT --config --file $OUTPUT --output.name hta --format iife && gzip-size $OUTPUT",
+    "build-browser-compact": "cross-env INPUT=./browser/compact.js OUTPUT=./dist/compact.js npm run build-browser",
+    "build-browser-all": "npm run build-browser-compact",
+    "_publish": "npm run test && npm run build-browser-all && npm publish"
   },
   "files": [
-    "lib",
+    "core",
+    "hook",
+    "store",
+    "async",
+    "context",
+    "router",
     "dist"
   ],
   "bugs": {
@@ -61,7 +68,9 @@
     "jest": "^26.2.2",
     "node-fetch": "^2.6.0",
     "prettier": "^2.0.5",
-    "terser": "^5.3.8",
+    "rollup": "^2.33.1",
+    "uglify-js": "^3.11.5",
+    "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.0.2",
     "parcel-bundler": "^1.12.4",
     "path-to-regexp": "^6.2.0",

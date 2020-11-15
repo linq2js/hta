@@ -1,5 +1,7 @@
-import $ from "../../lib";
+import { $, render } from "../../core";
 import "./styles.css";
+import { hookExtras, useStore } from "../../hook";
+import { storeExtras } from "../../store";
 
 const startTime = Date.now();
 const duration = 30000;
@@ -7,8 +9,8 @@ const numElements = 100;
 const elements = new Array(numElements).fill(1).map((_, index) => index + 1);
 
 const Cell = ({ n }) => {
-  const color = $.store((state) => state.colors[n]);
-  return $`<div style="width: 30px; height: 30px; textAlign: center; padding: 10px; float: left;" ${{
+  const color = useStore((state) => state.colors[n]);
+  return $`<div style="width: 30px; height: 30px; text-align: center; padding: 10px; float: left;" ${{
     style: { backgroundColor: color },
   }}>${n}</div>`;
 };
@@ -20,29 +22,40 @@ const Matrix = () => {
   ])}</div>`;
 };
 
-const App = ({ startTime, numColorUpdates }) => {
+const Info = () => {
+  const { numColorUpdates, startTime } = useStore((state) => ({
+    numColorUpdates: state.numColorUpdates,
+    startTime: state.startTime,
+  }));
   const secondsRunning = (Date.now() - startTime) / 1000;
   const colorsPerSecond = Math.floor(numColorUpdates / secondsRunning);
 
   return $`
+  <h1 style="font-weight: 100">${secondsRunning}</h1>
+  <div>${numColorUpdates} colors</div>
+  <div>${colorsPerSecond} colors per second</div>
+  `;
+};
+
+const App = () => {
+  return $`
   <div>
     <h1>HTA</h1>
     <div>
-      <h1 style="font-weight: 100">${secondsRunning}</h1>
-      <div>${numColorUpdates} colors</div>
-      <div>${colorsPerSecond} colors per second</div>
+      ${Info}
       ${Matrix}
     </div>
   </div>
   `;
 };
 
-const app = $.render(App, {
+const app = render(App, {
   state: {
     startTime,
     numColorUpdates: 0,
     colors: {},
   },
+  use: [hookExtras, storeExtras],
   container: "#app",
 });
 

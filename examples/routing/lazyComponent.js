@@ -1,6 +1,6 @@
-import $ from "../../lib";
+import { useStore } from "../../hook";
 
 export default function () {
-  const name = $.store((state) => state.location.state);
+  const name = useStore((state) => state.location.state);
   return `Hello ${name}`;
 }

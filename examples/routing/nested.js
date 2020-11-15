@@ -1,5 +1,6 @@
-import $ from "../../lib";
-import router from "../../router";
+import { $, render } from "../../core";
+import { hookExtras } from "../../hook";
+import { router, link } from "../../router";
 
 const topics = [
   {
@@ -74,7 +75,7 @@ const TopicList = ({ match }) => $`
   <ul>
     ${topics.map(
       (topic) =>
-        $`<li><a ${{ href: match.add.url(topic.id) }} ${router.link}>${
+        $`<li><a ${{ href: match.add.url(topic.id) }} ${link}>${
           topic.name
         }</a></li>`
     )}
@@ -91,7 +92,7 @@ const Topic = ({ match }) => {
     <ul>
     ${topic.resources.map(
       (res) =>
-        $`<li><a ${{ href: match.add.url(res.id) }} ${router.link}>${
+        $`<li><a ${{ href: match.add.url(res.id) }} ${link}>${
           res.name
         }</a></li>`
     )}
@@ -127,11 +128,14 @@ const resourceRoutes = {
   ":resId": ResourceList,
 };
 
-$.render($`
+render(
+  $`
   <h1>Nested Route Demo</h1>
   <p>
-    <a href="/" ${router.link}>Home</a> |
-    <a href="/topic" ${router.link}>Topics</a>
+    <a href="/" ${link}>Home</a> |
+    <a href="/topic" ${link}>Topics</a>
   </p>
   ${router(rootRoutes)}
-`);
+`,
+  { use: hookExtras }
+);

@@ -4,7 +4,12 @@
     "routing": "parcel ./routing/index.html",
     "nested-routing": "parcel ./routing/nested.html",
     "bindings-dimensions": "parcel ./bindings-dimensions/index.html",
-    "rainbow": "parcel ./rainbow/index.html"
+    "rainbow": "parcel ./rainbow/index.html",
+    "hyperhtml-rainbow": "npx serve ./hyperhtml-rainbow",
+    "keyed-list": "parcel ./keyed-list/index.html",
+    "crypto-search": "parcel ./crypto-search/index.html",
+    "small-samples": "parcel ./small-samples/index.html",
+    "todo-mvc": "parcel ./todo-mvc/index.html"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

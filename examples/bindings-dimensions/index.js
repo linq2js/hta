@@ -1,18 +1,19 @@
-import $ from "../../lib";
+import { $, render } from "../../core";
+import { hookExtras, useBinding, useState } from "../../hook";
 
 const App = () => {
-  const clientWidth = $.bind();
-  const clientHeight = $.bind();
-  const selectionStart = $.bind();
-  const selectionEnd = $.bind();
-  const [text, setText] = $.state("Edit me");
-  const [size, setSize] = $.state(42);
+  const clientWidth = useBinding();
+  const clientHeight = useBinding();
+  const selectionStart = useBinding();
+  const selectionEnd = useBinding();
+  const [text, setText] = useState("Edit me");
+  const [size, setSize] = useState(42);
 
-  function handleSizeChange(_, e) {
+  function handleSizeChange(e) {
     setSize(e.target.value);
   }
 
-  function handleTextChange(_, e) {
+  function handleTextChange(e) {
     setText(e.target.value);
   }
 
@@ -36,4 +37,4 @@ const App = () => {
   `;
 };
 
-$.render(App, { container: "#app" });
+render(App, { container: "#app", use: hookExtras });
