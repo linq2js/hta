@@ -27,6 +27,7 @@ function createTemplate(key, strings, values) {
     key,
     type: TEMPLATE,
     equal: (other) => other.id === id,
+    dynamic: !!values.length,
     values,
     render(marker) {
       if (!data.template)

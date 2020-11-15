@@ -83,7 +83,7 @@ render(<App />, document.body);
 | Suspense                  | &#9745; | &#9745; |         |         |
 | Declarative               | &#9745; | &#9745; |         |         |
 | Component                 | &#9745; | &#9745; | &#9745; | &#9745; |
-| Hooks                     | &#9745; | &#9745; | &#9745; |         |
+| Functional Hooks          | &#9745; | &#9745; | &#9745; |         |
 | Lazy Component            | &#9745; | &#9745; | &#9745; | &#9745; |
 | Shared Context            | &#9745; | &#9745; | &#9745; | &#9745; |
 

@@ -231,10 +231,10 @@ test("selector", () => {
 });
 
 test("counter using local state", () => {
-  render((store, { state, set, init }) => {
-    init(() => ({ count: 5 }));
+  render((store, { state, setState, initState }) => {
+    initState(() => ({ count: 5 }));
     return $`<h1 ${{
-      onclick: () => set({ count: state.count + 1 }),
+      onclick: () => setState({ count: state.count + 1 }),
     }}>${state.count}</h1>`;
   });
   expect(query("h1").innerHTML).toBe("5");

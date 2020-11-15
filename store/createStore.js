@@ -2,7 +2,7 @@ import createLoadable from "../async/createLoadable";
 import createEmitter from "../core/createEmitter";
 import isPromiseLike from "../core/isPromiseLike";
 import { CHANGE, EMPTY_OBJECT } from "../core/types";
-import { isArray } from "../core/util";
+import { isArray, margeState } from "../core/util";
 import createSelector from "./createSelector";
 
 let cachedMethods = {};
@@ -57,34 +57,17 @@ export function createStore(initial, selectors) {
     updateTimer = setTimeout(updateState, 0, pendingChanges);
   }
 
+  function handlePromise(prop, promise, last) {
+    return createLoadable(promise, {
+      last,
+      onDone(loadable) {
+        state[prop] === promise && lazyUpdateState({ [prop]: loadable });
+      },
+    });
+  }
+
   function updateState(changes) {
-    if (!changes) return;
-    let next = state;
-    for (let prop in changes) {
-      let value = changes[prop];
-      // noinspection JSUnfilteredForInLoop
-      if (next[prop] !== value) {
-        if (next === state) {
-          next = { ...state };
-        }
-        if (isPromiseLike(value)) {
-          let promise = value;
-          next[prop] = createLoadable(promise, {
-            last: next[prop],
-            onDone(loadable) {
-              state[prop] === promise && lazyUpdateState({ [prop]: loadable });
-            },
-          });
-        } else if (value && typeof value.next === "function") {
-          // generator
-        } else {
-          next[prop] = value;
-        }
-      }
-    }
-    if (next !== state) {
-      state = next;
-    }
+    state = margeState(state, changes, handlePromise);
   }
 
   function bulkDispatch(actions) {

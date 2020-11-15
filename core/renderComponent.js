@@ -5,7 +5,7 @@ import objectEqual from "./objectEqual";
 import tryReorder from "./tryReorder";
 import tryUnmount from "./tryUnmount";
 import { EMPTY_OBJECT, FUNC, INNER, RENDERER, SCOPE } from "./types";
-import { enqueue1, isArray } from "./util";
+import { enqueue1, isArray, margeState } from "./util";
 
 export default function renderComponent(
   renderContent,
@@ -63,24 +63,21 @@ function mount(renderContent, app, context, marker, component) {
     select,
     state: {},
     dispatch: app.store.dispatch,
-    init(initializer) {
-      !rendered && Object.assign(api.state, initializer());
-    },
-    set(changes = EMPTY_OBJECT) {
-      if (typeof changes === "function") changes = changes(state);
-      if (changes === api.state) return;
-      let next = api.state;
-      for (let prop in changes) {
-        if (changes[prop] !== next[prop]) {
-          if (next === api.state) next = { ...api.state };
-          next[prop] = changes[prop];
-        }
-      }
-
-      // noinspection CommaExpressionJS
-      next !== api.state && ((api.state = next), forceUpdate());
-    },
+    initState,
+    setState,
   };
+
+  function initState(initializer) {
+    !rendered && Object.assign(api.state, initializer());
+  }
+
+  function setState(changes) {
+    let next = margeState(api.state, changes);
+    if (next !== api.state) {
+      api.state = next;
+      forceUpdate();
+    }
+  }
 
   function subscribe(subscribeFn, handler) {
     if (subscriptions.has(subscribeFn)) return;
