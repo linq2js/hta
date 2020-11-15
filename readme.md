@@ -124,6 +124,72 @@ render(
 
 The binding must be placed in open tag. You can bind any element property / attribute.
 
+#### Handling element event
+
+```js
+import { $, render } from "hta";
+render($`<button ${{ onclick: () => alert("Hello World") }}>Click me</button>`);
+```
+
+> HTA treats the binding which starts with on\*\*\* as event handler.
+
+> If you want to bind some element property/attribute which starts with on\*\*\* ?
+> Using { attr: { attrName: value } } for attribute binding and { prop: { propName: value } } for property binding
+
+#### Updating element text
+
+There are 2 ways to update element text
+
+1. Using text / textContent binding
+1. Using substitution is more flexible than above
+
+```js
+import { $, render } from "hta";
+render($`
+  <button ${{ text: "Button 1" }}></button>
+  <button ${{ textContext: "Button 2" }}></button>
+  <button>${"Button 3"} ${"Other text"}</button>
+`);
+```
+
+#### Updating element HTML
+
+There are 2 ways to update element HTML
+
+1. Using text / textContent binding
+1. Using substitution is more flexible than above
+
+```js
+import { $, render } from "hta";
+render($`
+  <button ${{ html: "<strong>Button 1</strong>" }}></button>
+  <button ${{ innerHTML: "<strong>Button 2</strong>" }}></button>
+  <button>${$`<strong>Button 3</strong>`} ${$("Other HTML")}</button>
+`);
+```
+
+### Component
+
+HTA component is pure function, that receives component props and return component content
+
+```js
+function MyComponent(props) {
+  return $`<h2>Hello ${props.name}</h2>`;
+}
+
+function App() {
+  return $`
+    <h1>Component Demo</h1>
+    <!-- passing tuple to substitution to render MyComponent with specified props  -->
+    ${[MyComponent, { name: "World" }]}
+  `;
+}
+
+render(App);
+```
+
+> Component content is anything, it is the same as substitution
+
 ## Advanced Usages
 
 ## Examples

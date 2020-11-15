@@ -1,4 +1,3 @@
-import createContentWrapper from "./createContentWrapper";
 import createInstance from "./createInstance";
 import createMarker from "./createMarker";
 import isEqual from "./isEqual";
@@ -47,6 +46,7 @@ function mount(renderContent, app, context, marker, component) {
   let currentState;
   let error;
   let subscriptions = new Map();
+  let rendered = false;
   let instance = {
     firstNode() {
       return data[INNER].firstNode();
@@ -58,6 +58,28 @@ function mount(renderContent, app, context, marker, component) {
     select,
     reorder,
     subscribe,
+  };
+  let api = {
+    select,
+    state: {},
+    dispatch: app.store.dispatch,
+    init(initializer) {
+      !rendered && Object.assign(api.state, initializer());
+    },
+    set(changes = EMPTY_OBJECT) {
+      if (typeof changes === "function") changes = changes(state);
+      if (changes === api.state) return;
+      let next = api.state;
+      for (let prop in changes) {
+        if (changes[prop] !== next[prop]) {
+          if (next === api.state) next = { ...api.state };
+          next[prop] = changes[prop];
+        }
+      }
+
+      // noinspection CommaExpressionJS
+      next !== api.state && ((api.state = next), forceUpdate());
+    },
   };
 
   function subscribe(subscribeFn, handler) {
@@ -89,10 +111,8 @@ function mount(renderContent, app, context, marker, component) {
     storeValues = [];
     invoke(extras.updating);
     try {
-      let content = component(prevProps, {
-        select,
-        dispatch: app.store.dispatch,
-      });
+      let content = component(prevProps, api);
+      rendered = true;
       renderContent(app, context, data, INNER, innerMaker, content);
     } catch (error) {
       invoke(extras.error, { error });

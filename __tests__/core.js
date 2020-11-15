@@ -229,3 +229,16 @@ test("selector", () => {
   expect(app.state.double()).toBe(2);
   expect(app.state.quad()).toBe(4);
 });
+
+test("counter using local state", () => {
+  render((store, { state, set, init }) => {
+    init(() => ({ count: 5 }));
+    return $`<h1 ${{
+      onclick: () => set({ count: state.count + 1 }),
+    }}>${state.count}</h1>`;
+  });
+  expect(query("h1").innerHTML).toBe("5");
+  query("h1").click();
+  query("h1").click();
+  expect(query("h1").innerHTML).toBe("7");
+});

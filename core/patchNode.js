@@ -14,6 +14,7 @@ export default function patchNode(app, context, parent, key, node, props) {
       event: new Map(),
       class: new Map(),
       style: new Map(),
+      custom: new Map(),
     };
   }
   if (typeof props === "function") {
@@ -62,7 +63,17 @@ export default function patchNode(app, context, parent, key, node, props) {
               node.$$dynamicBindings.add(value);
               value.watch(node, type);
             }
-          } else {
+          } else if (
+            !app.extras.render.patch ||
+            !app.extras.render.patch({
+              node,
+              type,
+              value,
+              app,
+              context,
+              data: prev.custom,
+            })
+          ) {
             patchProperty(app, context, node, prev.prop, type, value);
           }
           break;

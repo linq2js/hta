@@ -38,6 +38,7 @@ export default function render(content, options = {}) {
       }
       if (render) {
         addExtras(extras.render, "object", render, compose);
+        addExtras(extras.render, "patch", render, compose);
       }
     });
   }
