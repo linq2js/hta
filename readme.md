@@ -204,5 +204,6 @@ render(App);
 - SVG Animation
   - [hta](https://codesandbox.io/s/hta-v1-balls-anim-90v1j?file=/src/index.js)
   - [d3js](http://tommykrueger.com/projects/d3tests/performance-test.php)
+- (more examples)[https://github.com/linq2js/hta/tree/master/examples]
 
 ## API references
