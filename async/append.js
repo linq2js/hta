@@ -68,6 +68,9 @@ function mount(renderContent, marker) {
     let hasFallback = "fallback" in options;
     instance.iterator = iterator;
     handleGenerator(iterator, {
+      isCancelled() {
+        return instance.unmounted;
+      },
       onYield(value) {
         isLoading = false;
         let availItem = tryCreateItem();

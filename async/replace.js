@@ -28,6 +28,9 @@ function mount(marker) {
     let { resolve, reject } = options;
     instance.iterator = iterator;
     handleGenerator(iterator, {
+      isCancelled() {
+        return instance.unmounted;
+      },
       onYield: (value) =>
         instance.render(app, context, resolve ? resolve(value) : value),
       onError: (error) =>

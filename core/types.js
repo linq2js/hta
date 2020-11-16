@@ -12,6 +12,7 @@ export let STATE_HOOK = Symbol("state");
 export let CALLBACK_HOOK = Symbol("callback");
 export let MEMO_HOOK = Symbol("memo");
 export let EFFECT_HOOK = Symbol("effect");
+export let DELEGATE_HOOK = Symbol("delegate");
 export let RENDERER = Symbol("renderer");
 export let HOOKS = Symbol("hooks");
 export let LOADABLE_PROMISE = Symbol("loadable_promise");
