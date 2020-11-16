@@ -196,7 +196,7 @@ render(App);
 
 - [Todo MVC(140 lines of code)](https://codesandbox.io/s/hta-todomvc-76dib?file=/src/index.js)
 - [Todo App (4000 todos)](https://codesandbox.io/s/hta-todo-performance-forked-1xmx5?file=/src/index.js)
-- [Crypto Search (700 coins)](https://codesandbox.io/s/hta-crypto-search-rv39j?file=/src/hta/index.js)
+- [Crypto Search (3000 coins)](https://codesandbox.io/s/hta-crypto-search-rv39j?file=/src/hta/index.js)
 - [Silky Smooth (Fast enough to render over 500 elements at 60fps)](https://codesandbox.io/s/hta-silky-smooth-2-s3l3r?file=/src/index.js)
 - Performance testing
   - [hta](https://codesandbox.io/s/hta-v1-performance-b3dou?file=/src/index.js)
