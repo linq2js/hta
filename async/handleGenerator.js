@@ -4,24 +4,24 @@ export default function handleGenerator(
   iterator,
   { onYield, onError, onDone, onLoading, isCancelled }
 ) {
-  function next() {
+  function handleError(error) {
+    if (!onError) throw error;
+    onError(error);
+  }
+
+  function next(payload) {
     if (isCancelled && isCancelled()) return;
     try {
-      let result = iterator.next();
-      if (isPromiseLike(result)) {
+      let result = iterator.next(payload);
+      if (result.done) return onDone && onDone();
+      if (isPromiseLike(result.value)) {
         onLoading && onLoading();
-        result.then(({ done, value }) => {
-          if (isCancelled && isCancelled()) return;
-          if (done) return onDone && onDone();
-          onYield(value);
-          next();
-        }, onError);
-      } else {
-        if (result.done) return onDone && onDone();
-        onYield(result.value);
+        return result.value.then(next, handleError);
       }
+      onYield(result.value);
+      next();
     } catch (error) {
-      onError && onError(error);
+      handleError(error);
     }
   }
 

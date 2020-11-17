@@ -1,10 +1,10 @@
 import { $, render } from "../../core";
 import { append, asyncExtras, delay, suspense, valueOf } from "../../async";
-import { hookExtras, useStore } from "../../hook";
+import { hookExtras, useMemo, useStore } from "../../hook";
 import { storeExtras } from "../../store";
 
-const maxCoins = 3000;
-const searchDebounce = 200;
+const maxCoins = 10000;
+const searchDebounce = 1;
 
 const Text = ({ text, term }) => {
   if (!term) return text;
@@ -18,11 +18,11 @@ const Text = ({ text, term }) => {
 
 const Row = ({ term, coin }) => $`
   <tr>
-    <td>${Text({ term, text: coin.Id })}</td>
-    <td>${Text({ term, text: coin.Symbol })}</td>
+    <td style="width: 80px">${Text({ term, text: coin.Id })}</td>
+    <td style="width: 150px">${Text({ term, text: coin.Symbol })}</td>
     <td>${Text({ term, text: coin.FullName })}</td>
-    <td>${coin.TotalCoinsMined}</td>
-    <td><img style="width: 30px" ${{
+    <td style="width: 180px">${coin.TotalCoinsMined}</td>
+    <td style="width: 100px"><img style="width: 30px" ${{
       src: `https://cryptocompare.com${coin.ImageUrl || ""}`,
     }}/></td>
   </tr>
@@ -39,22 +39,22 @@ const Header = ({ width, column, orderBy, desc }) =>
 
 const Table = (props, select) => {
   // select coins from app state
-  const { coins, orderBy, desc, term, coinIterable } = useStore((state) => {
+  const { coins, orderBy, desc, term } = useStore((state) => {
     // using valueOf to get value of loadable object
     return {
       coins: valueOf(state.coins),
       orderBy: state.orderBy,
       desc: state.desc,
       term: String(state.filter || "").toLowerCase(),
-      coinIterable: state.coinIterable,
     };
   });
+  const coinIterable = useMemo(() => createCoinIterable(coins), [coins]);
 
   return $`
   <div class="form-group">
     <input type="email"
       class="form-control"
-      placeholder="Search coin (The coin table will update after 300ms)" ${{
+      placeholder="Search coin" ${{
         oninput: {
           action: Search,
           debounce: searchDebounce,
@@ -73,13 +73,9 @@ const Table = (props, select) => {
       </tr>
     </thead>
     <tbody>
-      ${
-        coinIterable
-          ? append(coinIterable, {
-              resolve: (coin) => Row({ coin, term, key: coin.id }),
-            })
-          : coins.map((coin) => Row({ coin, term, key: coin.id }))
-      }
+      ${append(coinIterable, {
+        resolve: (coin) => Row({ coin, term, key: coin.id }),
+      })}
     </tbody>
   </table>
 `;
@@ -119,40 +115,37 @@ function Search(state, e) {
 
 function UpdateCoins({ coins, originalCoins, orderBy, desc, filter }) {
   const source = originalCoins || coins;
-  const newCoins = source.map((coins) => {
-    if (filter) {
-      const term = filter.toLowerCase();
-      coins = coins.filter(
-        (coin) =>
-          coin.Id.toLowerCase().includes(term) ||
-          coin.Symbol.toLowerCase().includes(term) ||
-          coin.FullName.toLowerCase().includes(term)
-      );
-    } else {
-      coins = coins.slice();
-    }
-    const step = desc ? -1 : 1;
-    return coins.sort((a, b) => {
-      const av = a[orderBy] || 0;
-      const bv = b[orderBy] || 0;
-      if (av > bv) return step;
-      if (av < bv) return -1 * step;
-      return 0;
-    });
-  });
 
   return {
     originalCoins: originalCoins || coins,
-    coins: newCoins,
-    coinIterable: coinIterable(newCoins),
+    coins: source.map((coins) => {
+      if (filter) {
+        const term = filter.toLowerCase();
+        coins = coins.filter(
+          (coin) =>
+            coin.Id.toLowerCase().includes(term) ||
+            coin.Symbol.toLowerCase().includes(term) ||
+            coin.FullName.toLowerCase().includes(term)
+        );
+      } else {
+        coins = coins.slice();
+      }
+      const step = desc ? -1 : 1;
+      return coins.sort((a, b) => {
+        const av = a[orderBy] || 0;
+        const bv = b[orderBy] || 0;
+        if (av > bv) return step;
+        if (av < bv) return -1 * step;
+        return 0;
+      });
+    }),
   };
 }
 
-async function* coinIterable(coins) {
-  coins = coins.value;
-  await delay(100);
+function* createCoinIterable(coins) {
+  yield delay(100);
   for (let i = 0; i < coins.length; i++) {
-    if (i % 100 === 0) await delay(0);
+    if (i % 200 === 0) yield delay(0);
     yield coins[i];
   }
 }

@@ -9,7 +9,7 @@ export let enqueue2 =
     ? enqueue1
     : requestAnimationFrame;
 
-export function margeState(originalState, changes, promiseProcessor) {
+export function margeState(originalState, changes, promiseProcessor, onChange) {
   if (!changes || changes === originalState) return originalState;
   if (typeof changes === "function") changes = changes(originalState);
   let nextState = originalState;

@@ -115,39 +115,45 @@ function patchEvent(app, context, node, prev, event, handler) {
   }
 
   let isFunc = typeof handler === "function";
+  let isAction = false;
   let debounceMs, debounceCall;
   if (handler && !isFunc && !isArray(handler)) {
     debounceMs = handler.debounce;
-    if ("payload" in handler) {
-      handler = [handler.action, handler.payload];
+    if (handler.action) {
+      isAction = true;
+      if ("payload" in handler) {
+        handler = [handler.action, handler.payload];
+      } else {
+        handler = handler.action;
+      }
     } else {
-      handler = handler.action;
+      handler = handler.handler;
     }
   }
   let wrapper = isFunc
     ? handler
     : (e) => {
+        function invoke() {
+          if (isArray(handler)) {
+            return app.store.dispatch(
+              handler[0],
+              typeof handler[1] === "function"
+                ? // argument placeholder
+                  // onclick: [Action, $]
+                  handler[1] === createUnKeyedTemplate
+                  ? e
+                  : handler[1](e)
+                : handler[1]
+            );
+          }
+          if (isAction) return app.store.dispatch(handler, e);
+          return handler(e);
+        }
         if (debounceMs) {
-          debounceCall = executeDebounce(
-            () => app.store.dispatch(handler, e),
-            debounceMs,
-            debounceCall
-          );
-          return;
+          debounceCall = executeDebounce(invoke, debounceMs, debounceCall);
+        } else {
+          invoke();
         }
-        if (isArray(handler)) {
-          return app.store.dispatch(
-            handler[0],
-            typeof handler[1] === "function"
-              ? // argument placeholder
-                // onclick: [Action, $]
-                handler[1] === createUnKeyedTemplate
-                ? e
-                : handler[1](e)
-              : handler[1]
-          );
-        }
-        return app.store.dispatch(handler, e);
       };
   wrapper.action = handler;
   prev.set(event, wrapper);

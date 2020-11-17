@@ -147,10 +147,10 @@ document.body.innerHTML = `
 })();
 
 (() => {
-  const createCountDown = async function* (start) {
+  const createCountDown = function* (start) {
     while (start >= 0) {
       yield start;
-      await delay(1000);
+      yield delay(1000);
       start--;
     }
   };
@@ -182,9 +182,9 @@ document.body.innerHTML = `
 })();
 
 (() => {
-  const createCountDown = async function* (start) {
+  const createCountDown = function* (start) {
     while (start >= 0) {
-      await delay(1000);
+      yield delay(1000);
       yield start;
       start--;
     }

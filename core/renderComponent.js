@@ -59,23 +59,29 @@ function mount(renderContent, app, context, marker, component) {
     reorder,
     subscribe,
   };
+  let state = {};
   let api = {
     select,
-    state: {},
     dispatch: app.store.dispatch,
-    initState,
+    getState,
     setState,
   };
 
-  function initState(initializer) {
-    !rendered && Object.assign(api.state, initializer());
+  function getState(initializer) {
+    if (!rendered && arguments.length) {
+      state =
+        (typeof initializer === "function" ? initializer() : initializer) ||
+        state;
+    }
+    return state;
   }
 
-  function setState(changes) {
-    let next = margeState(api.state, changes);
-    if (next !== api.state) {
-      api.state = next;
+  function setState(changes, callback) {
+    let next = margeState(state, changes);
+    if (next !== state) {
+      state = next;
       forceUpdate();
+      callback && callback(state);
     }
   }
 
