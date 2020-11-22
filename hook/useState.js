@@ -1,4 +1,4 @@
-import {EMPTY_ARRAY, FUNC, HOOKS, SCOPE, STATE_HOOK} from "../core/types";
+import { EMPTY_ARRAY, FUNC, HOOKS, SCOPE, STATE_HOOK } from "../core/types";
 
 export default function useState(initial) {
   let component = SCOPE.current.component;
@@ -11,7 +11,9 @@ export default function useState(initial) {
       }
       if (nextValue === value) return;
       value = nextValue;
-      component.forceUpdateAsync();
+      component.updates
+        ? component.forceUpdateAsync()
+        : component.forceUpdate();
     }
 
     return {

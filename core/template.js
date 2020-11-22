@@ -1,9 +1,9 @@
-import arrayKeyedMap from "./arrayKeyedMap";
+import createArrayKeyedMap from "./createArrayKeyedMap";
 import createMarker from "./createMarker";
 import { DIRECTIVE, DOC, EMPTY_ARRAY, PLACEHOLDER, TEMPLATE } from "./types";
 import { indexOf, slice } from "./util";
 
-let cache = arrayKeyedMap(parseTemplate);
+let cache = createArrayKeyedMap(parseTemplate);
 let TEMPLATE_ELEMENT = "template";
 let SLOT_ATTRIBUTE = "hta-slot";
 let SLOT_TOKEN = "@@hta";

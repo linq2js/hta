@@ -2,9 +2,12 @@ import { asyncExtras, delay, until, replace, append } from "../../async";
 import { $, render } from "../../core";
 import { hookExtras } from "../../hook";
 import useMemo from "../../hook/useMemo";
+import { styled } from "../../styled";
 import { tagExtras } from "../../tag";
 
 document.body.innerHTML = `
+    <div id="styled"></div>
+    <hr/>
     <div id="clock"></div>
     <hr/>
     <div id="raw-html"></div>
@@ -20,6 +23,7 @@ document.body.innerHTML = `
     <div id="replace"></div>
     <hr/>
     <div id="append"></div>
+    
 `;
 
 (() => {
@@ -212,6 +216,32 @@ document.body.innerHTML = `
       container: "#replace",
       state: { count: 10, toggle: false },
       use: [asyncExtras, hookExtras],
+    }
+  );
+})();
+
+(() => {
+  let redHeading = styled("h1")`
+    color: ${(props) => props.color};
+    font-size: ${(props) => props.size};
+  `;
+
+  render(
+    () => {
+      return $`
+      ${Array(1000)
+        .fill()
+        .map((_, index) =>
+          redHeading({
+            text: "Heading " + index,
+            size: "1em",
+            color: "#" + Math.floor(Math.random() * 0xffffff).toString(16),
+          })
+        )}
+    `;
+    },
+    {
+      container: "#styled",
     }
   );
 })();

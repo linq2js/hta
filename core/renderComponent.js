@@ -48,6 +48,7 @@ function mount(renderContent, app, context, marker, component) {
   let subscriptions = new Map();
   let rendered = false;
   let instance = {
+    updates: 0,
     firstNode() {
       return data[INNER].firstNode();
     },
@@ -114,12 +115,14 @@ function mount(renderContent, app, context, marker, component) {
     storeValues = [];
     invoke(extras.updating);
     try {
+      instance.updates++;
       let content = component(prevProps, api);
       rendered = true;
       renderContent(app, context, data, INNER, innerMaker, content);
     } catch (error) {
       invoke(extras.error, { error });
     } finally {
+      instance.updates--;
       SCOPE.current = prevScope;
       if (firstRender) {
         firstRender = false;

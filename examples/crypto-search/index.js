@@ -51,6 +51,7 @@ const Table = (props, select) => {
   const coinIterable = useMemo(() => createCoinIterable(coins), [coins]);
 
   return $`
+  <h1>Crypto Search</h1>
   <div class="form-group">
     <input type="email"
       class="form-control"
