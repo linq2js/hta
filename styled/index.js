@@ -44,7 +44,7 @@ function applyDocumentStyle(strings) {
     substitutions,
     defaultTheme
   );
-  document.documentElement.classList.add(result.class);
+  document.documentElement.classList.toggle(result.class, true);
 }
 
 export function styled(defaultTag, binding) {
