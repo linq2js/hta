@@ -221,6 +221,16 @@ document.body.innerHTML = `
 })();
 
 (() => {
+  styled`
+  height: 100%;
+  margin: 0;
+  
+  body {
+    height: 100%;
+    margin: 0;
+  }
+  `;
+
   let redHeading = styled("h1")`
     color: ${(props) => props.color};
     font-size: ${(props) => props.size};

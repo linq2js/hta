@@ -16,33 +16,48 @@ export function useTheme() {
   return consumeTheme();
 }
 
+function generateClass(props, strings, substitutions, overrideTheme) {
+  let theme = overrideTheme || consumeTheme();
+  let wrappedProps = { theme, ...props };
+  let style = substitutions
+    .reduce(
+      (arr, value, index) => {
+        arr.push(
+          typeof value === FUNC ? value(wrappedProps) : value,
+          strings[index + 1]
+        );
+        return arr;
+      },
+      [strings[0]]
+    )
+    .join("");
+  let klass = cache.get(style);
+  if (!klass) cache.set(style, (klass = addStyle(style)));
+  return { class: klass, props: wrappedProps };
+}
+
+function applyDocumentStyle(strings) {
+  let substitutions = slice.call(arguments, 1);
+  let result = generateClass(
+    EMPTY_OBJECT,
+    strings,
+    substitutions,
+    defaultTheme
+  );
+  document.documentElement.classList.add(result.class);
+}
+
 export function styled(defaultTag, binding) {
+  if (Array.isArray(defaultTag)) {
+    return applyDocumentStyle.apply(null, arguments);
+  }
   let hasBinding = arguments.length > 1;
+  let defaultGeneratedClass;
   return function (strings) {
     let substitutions = slice.call(arguments, 1);
 
-    function getClass(tag, props) {
-      let theme = consumeTheme();
-      let wrappedProps = { theme, ...props };
-      let style = substitutions
-        .reduce(
-          (arr, value, index) => {
-            arr.push(
-              typeof value === FUNC ? value(wrappedProps) : value,
-              strings[index + 1]
-            );
-            return arr;
-          },
-          [strings[0]]
-        )
-        .join("");
-      let klass = cache.get(style);
-      if (!klass) cache.set(style, (klass = addStyle(style)));
-      return { class: klass, props: wrappedProps };
-    }
-
     function render(tag, props = EMPTY_OBJECT) {
-      let result = getClass(tag, props);
+      let result = generateClass(props, strings, substitutions);
       result.props.class = result.class;
       if (typeof tag === FUNC) return tag(result.props);
       result.props.inner = null;
@@ -81,7 +96,14 @@ export function styled(defaultTag, binding) {
           };
         },
         toString() {
-          return getClass(defaultTag, EMPTY_OBJECT);
+          if (!defaultGeneratedClass) {
+            defaultGeneratedClass = generateClass(
+              EMPTY_OBJECT,
+              strings,
+              substitutions
+            ).class;
+          }
+          return defaultGeneratedClass;
         },
       }
     );
